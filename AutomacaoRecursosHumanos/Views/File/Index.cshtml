@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Upload de arquivo";
+    var data = ViewData["Message"];
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <label for="file">Upload do arquivo:</label>
+        <input type="file" name="files" id="file" multiple />
+        <br>
+        <input type="submit" value="Enviar arquivos" />
+        <br>
+        <br>
+        <p>@data</p>
+    }
+</div>
