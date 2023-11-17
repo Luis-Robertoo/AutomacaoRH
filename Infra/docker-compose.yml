@@ -1,0 +1,9 @@
+version: '1.0'
+
+services:
+    automacaorh:
+      build: ./../
+      image: automacaorh
+      container_name: automacaorh
+      ports:
+        - 80:5000

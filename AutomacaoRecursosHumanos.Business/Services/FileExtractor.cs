@@ -79,6 +79,8 @@ public class FileExtractor : IFileExtractor
 
             var employees = new List<Employee>();
 
+            _logger.LogInformation($"Iniciando a extração dos dados do arquivo {file.FileName}.");
+
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
                 while (!reader.EndOfStream)
@@ -130,6 +132,8 @@ public class FileExtractor : IFileExtractor
             department.TotalPagar = employees.Sum(e => e.TotalReceber);
             department.TotalDescontos = valorHorasFaltantesDepartamento;
             department.TotalExtras = valorHorasExtrasDepartamento;
+
+            _logger.LogInformation($"Finalizado a extração dos dados do arquivo {file.FileName}.");
 
             return (department, null);
 
