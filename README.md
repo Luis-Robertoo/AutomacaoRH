@@ -2,7 +2,7 @@
 
 Esta aplicação realiza o processamento de arquivos .CSV em lote e os tranforma em um único arquivo .json.
 
-Fiz uma alteração no padrão do JSON esperado, coloquei uma estrutura com os possíveis erros que possam ocorrer devido a problemas no nome do arquivo pu na estrutura do CSV. 
+Fiz uma alteração no padrão do JSON esperado, coloquei uma estrutura com os possíveis erros que possam ocorrer devido a problemas no nome do arquivo ou na estrutura do CSV. 
 
 ## Executando a aplicação
 
