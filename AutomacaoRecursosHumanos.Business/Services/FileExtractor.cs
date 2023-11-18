@@ -10,6 +10,7 @@ namespace AutomacaoRecursosHumanos.Business.Services;
 public class FileExtractor : IFileExtractor
 {
     private static readonly string _ExtensaoValida = ".csv";
+    private static readonly string _ErroEstruturaDados = "Erro na estrutura de dados do arquivo.";
     private static readonly string _ErroNomeArquivo = "Você deve ajustar o nome do arquivo de acordo com o padrão: departamento-mes-ano. Ex: Departamento de TI-ABRIL-2022";
     private readonly ILogger<FileExtractor> _logger;
 
@@ -90,7 +91,7 @@ public class FileExtractor : IFileExtractor
                     if (line.Contains("Código")) continue;
                     HourlyData pointOfDay = line;
 
-                    if (pointOfDay.Nome is null) throw new Exception("Erro na estrutura de dados do arquivo.");
+                    if (pointOfDay.Nome is null) throw new Exception(_ErroEstruturaDados);
 
                     var horasExtras = pointOfDay.TotalHorasDia > 8 ? pointOfDay.TotalHorasDia - 8 : 0;
                     var horasDebito = pointOfDay.TotalHorasDia < 8 ? pointOfDay.TotalHorasDia - 8 : 0;
@@ -102,15 +103,14 @@ public class FileExtractor : IFileExtractor
 
                     if (employeeSave is null)
                     {
-
                         var employeeSaved = new Employee
                         {
                             Codigo = pointOfDay.Codigo,
                             Nome = pointOfDay.Nome,
                             DiasTrabalhados = 1,
-                            TotalReceber = pointOfDay.TotalHorasDia * pointOfDay.ValorHora,
-                            HorasExtras = horasExtras,
-                            HorasDebito = horasDebito,
+                            TotalReceber = Math.Round(pointOfDay.TotalHorasDia * pointOfDay.ValorHora, 2),
+                            HorasExtras = Math.Round(horasExtras, 2),
+                            HorasDebito = Math.Round(horasDebito, 2),
                             DiasExtras = 1 - diasMes,
                             DiasFalta = diasMes - 1,
                         };
@@ -119,19 +119,19 @@ public class FileExtractor : IFileExtractor
                         continue;
                     }
 
-                    employeeSave.HorasDebito += horasDebito;
-                    employeeSave.HorasExtras += horasExtras;
                     employeeSave.DiasTrabalhados++;
-                    employeeSave.TotalReceber += (pointOfDay.TotalHorasDia * pointOfDay.ValorHora) + (horasExtras * pointOfDay.ValorHora);
+                    employeeSave.HorasDebito = Math.Round(employeeSave.HorasDebito + horasDebito, 2);
+                    employeeSave.HorasExtras = Math.Round(employeeSave.HorasExtras + horasExtras, 2);
+                    employeeSave.TotalReceber = Math.Round(employeeSave.TotalReceber + (pointOfDay.TotalHorasDia * pointOfDay.ValorHora) + (horasExtras * pointOfDay.ValorHora), 2);
                     employeeSave.DiasFalta = employeeSave.DiasTrabalhados < diasMes ? employeeSave.DiasTrabalhados - diasMes : 0;
                     employeeSave.DiasExtras = employeeSave.DiasTrabalhados > diasMes ? employeeSave.DiasTrabalhados - diasMes : 0;
                 }
             }
 
             department.Funcionarios = employees.ToArray();
-            department.TotalPagar = employees.Sum(e => e.TotalReceber);
-            department.TotalDescontos = valorHorasFaltantesDepartamento;
-            department.TotalExtras = valorHorasExtrasDepartamento;
+            department.TotalPagar = Math.Round(employees.Sum(e => e.TotalReceber), 2);
+            department.TotalDescontos = Math.Round(valorHorasFaltantesDepartamento, 2) * -1;
+            department.TotalExtras = Math.Round(valorHorasExtrasDepartamento, 2);
 
             _logger.LogInformation($"Finalizado a extração dos dados do arquivo {file.FileName}.");
 

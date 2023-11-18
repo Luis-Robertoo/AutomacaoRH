@@ -28,7 +28,7 @@ public class FileController : Controller
         ViewData["Message"] = "";
         if (dados is null || titulo is null)
         {
-            ViewData["Message"] = "Escolha arquivos válidos.";
+            ViewData["Message"] = "Escolha arquivos .CSV.";
             return View("Index");
         }
 

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Upload de arquivo";
+    ViewData["Title"] = "Fechamento de ponto automático";
     var data = ViewData["Message"];
 }
 
@@ -8,12 +8,33 @@
 <div>
     @using (Html.BeginForm("Upload", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        <label for="file">Upload do arquivo:</label>
-        <input type="file" name="files" id="file" multiple />
-        <br>
-        <input type="submit" value="Enviar arquivos" />
+        <label for="file">Faça o upload dos arquivos .CSV para gerar o cálculo de pagamento e relatório com os resultados em formato .JSON:</label>
         <br>
         <br>
-        <p>@data</p>
+        <input type="file" class="btn-primary" name="files" id="file" multiple />
+        <br>
+        <input type="submit" class="botao" value="Enviar arquivos"/>
+        <br>
+        <br>
+        <p class="erro">@data</p>
     }
 </div>
+
+<style>
+    label {
+        font-size: 18px;
+    }
+
+    .botao {
+        background-color: green;
+        color:white;
+        font-weight: bold;
+    }
+
+    .erro {
+        background-color: red;
+        text-align: center;
+        color: white;
+    }
+
+</style>
